@@ -45,7 +45,7 @@ PROJECT_APPS = [
     "rooms.apps.RoomsConfig",
 ]
 
-THIRD_PARTY_APPS = []
+THIRD_PARTY_APPS = ["django-countries"]
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS
 #  * Settings.py in setting : 내가 만든 폴더들을 인식하려면 setting.py에 등록해줘야함

@@ -1,13 +1,11 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.db.models.fields import DateField
-from django.utils.translation import LANGUAGE_SESSION_KEY
 
 # Create your models here.
 
 
 class User(AbstractUser):  # 상속 받음. base.py안에있는model으로부터 그리고 AbstracUser로 받았음.
-
+    # abstract모델 이지만 데이터베이스에 가지 않음.
     """Custom User Model"""
 
     GENDER_MALE = "male"

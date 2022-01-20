@@ -10,7 +10,7 @@ from core import models as core_models  # 세번째 줄 : 내 패키지
 # Create your models here.
 
 
-class AbstracctItem(core_models.TimeStampedModel):
+class AbstractItem(core_models.TimeStampedModel):
 
     name = models.CharField(max_length=80)
 
@@ -24,7 +24,7 @@ class AbstracctItem(core_models.TimeStampedModel):
 # 이클래스를 만든 이유가 roomType을 위해서..
 
 
-class RoomType(AbstracctItem):
+class RoomType(AbstractItem):
 
     """RoomType Object Definition"""
 
@@ -36,21 +36,21 @@ class RoomType(AbstracctItem):
 
 
 # 초반에 생성될때 장고는 뒤에 s를 붙인다. 내 마음대로 이름을 넣어주기 위해 좀 고치자면
-class Amenity(AbstracctItem):
+class Amenity(AbstractItem):
     """Amenity Object Definition"""
 
     class Meta:
         verbose_name_plural = "Amenities"  # 장고가 자동으로 Amenitys이러헤 된것을 verbose_name_plural로 s를 Amenities로 예쁘게
 
 
-class Facility(AbstracctItem):
+class Facility(AbstractItem):
     """Facility model Definition"""
 
     class Meta:
         verbose_name_plural = "Facilities"
 
 
-class HouseRule(AbstracctItem):
+class HouseRule(AbstractItem):
 
     """HouseRule Model Definition"""
 

@@ -10,5 +10,7 @@ class ReservationAdmin(admin.ModelAdmin):
     pass
     """Reservation Admin Definition"""
 
+    list_display = ("room", "status", "check_in", "check_out", "guest", "in_progress")
+
 
 # Register your models here.

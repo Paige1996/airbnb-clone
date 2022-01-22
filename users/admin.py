@@ -11,22 +11,35 @@ class CustomUserAdmin(UserAdmin):  # customUserAdmin으로 user을 컨트롤 Use
 
     """Custom User Admin"""
 
-    fieldsets = (
-        UserAdmin.fieldsets
-        + (  # userAdmin은 이미 장고가 자동으로 가지고 있다. 그거에다가 filedset이라는 내가만든 세트도 같이 화면에 적용해달라는것임
-            (
-                "Custom profile",  # 필드의 제목
-                {
-                    "fields": (  # 필드 내용
-                        "avatar",
-                        "gender",
-                        "bio",
-                        "birthdate",
-                        "language",
-                        "currency",
-                        "superhost",
-                    )
-                },
-            ),
-        )
+    fieldsets = UserAdmin.fieldsets + (  # userAdmin은 이미 장고가 자동으로 가지고 있다. 그거에다가 filedset이라는 내가만든 세트도 같이 화면에 적용해달라는것임
+        # 윗 부분이 userAdmin, 밑에있는 filedset이 내가 만든 세트
+        (
+            "Custom profile",  # 필드의 제목
+            {
+                "fields": (  # 필드 내용
+                    "avatar",
+                    "gender",
+                    "bio",
+                    "birthdate",
+                    "language",
+                    "currency",
+                    "superhost",
+                )
+            },
+        ),
+    )
+    list_filter = UserAdmin.list_filter + ("superhost",)  # 옆꿀떼기에 보이는거
+
+    # 처음 raw에 어떻게 보여질지
+    list_display = (
+        "username",
+        "first_name",
+        "last_name",
+        "email",
+        "is_active",
+        "language",
+        "currency",
+        "superhost",
+        "is_staff",
+        "is_superuser",
     )

@@ -17,9 +17,11 @@ class Review(core_models.TimeStampedModel):
     check_in = models.IntegerField()
     value = models.IntegerField()
     user = models.ForeignKey(
-        "users.User", on_delete=models.CASCADE
+        "users.User", related_name="reviews", on_delete=models.CASCADE
     )  # user가 삭제되면 리뷰가 삭제돼야함
-    room = models.ForeignKey("rooms.Room", on_delete=models.CASCADE)
+    room = models.ForeignKey(
+        "rooms.Room", related_name="reviews", on_delete=models.CASCADE
+    )
 
     def __str__(self):
         return f"{self.review} - {self.room}"
@@ -27,3 +29,17 @@ class Review(core_models.TimeStampedModel):
 
     # return  self.room.host.username
     # -> 이거는... room 안에 host. host안에 user. user은 AbstractUser이 상속받은거... 결국 AbstractUser안에 username
+
+    # 하나의 리뷰에 대한 평균을 내고싶음...
+    def rating_average(self):
+        avg = (
+            self.accuracy
+            + self.communication
+            + self.cleanliness
+            + self.location
+            + self.check_in
+            + self.value
+        ) / 6
+        return round(avg, 2)
+
+    rating_average.short_description = "AVG."

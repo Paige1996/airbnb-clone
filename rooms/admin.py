@@ -14,6 +14,14 @@ class ItemAdmin(
 ):  # 이걸 해주면 roomType, facility, amenity, houseRule 이라는(models.py room에 있는거)안에 뭔가를 추가 시켜줄수있음.
     """Item Admin Definition"""
 
+    list_display = (
+        "name",
+        "used_by",
+    )
+
+    def used_by(self, obj):
+        return obj.rooms.count()
+
     pass
 
 
@@ -59,6 +67,8 @@ class RoomAdmin(admin.ModelAdmin):
         "check_out",
         "instant_book",
         "count_amenities",
+        "count_photos",
+        "total_rating",
     )
 
     ordering = ("name", "price")  # 어드민 패널에 이름이나 가격 순으로 ordering할 수 있는 것.
@@ -94,10 +104,12 @@ class RoomAdmin(admin.ModelAdmin):
     # 위에서 적은것 처럼 그냥 나열도 되지만 내 마음대로 이름을 커스터마이징 할 수 가 있는데,
     # 그때 함수를 쓴다. ameninties의 갯수를 새아리기 위해 적을 수 있는 것은?
     def count_amenities(self, obj):
-        print(obj.amenities)
-        return "potato"
+        return obj.amenities.count()
 
-    count_amenities.short_description = "hello!"
+    # count_amenities.short_description = "hello!" 칼럼이름을 새로 쓸수있음
+
+    def count_photos(self, obj):
+        return obj.photos.count()
 
 
 # admin에 있는 함수는 두가지를 가지는데 하나는 self는 RoomAdmin 클래스이고, obj는 현재 row이다.

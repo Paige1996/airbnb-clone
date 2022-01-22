@@ -64,7 +64,9 @@ class Photo(core_models.TimeStampedModel):
     caption = models.CharField(max_length=80)
     file = models.ImageField()
     room = models.ForeignKey(
-        "Room", on_delete=models.CASCADE
+        "Room",
+        related_name="photos",
+        on_delete=models.CASCADE,
     )  # room을 지우면 자동으로 자동으로 사진도 지워지니까 CASCADE
 
     def __str__(self):
@@ -88,22 +90,35 @@ class Room(core_models.TimeStampedModel):
     check_out = models.TimeField()
     instant_book = models.BooleanField(default=False)
     host = models.ForeignKey(
-        "users.User",  # user는 users안에 있으니까
+        "users.User",
+        related_name="rooms",  # user는 users안에 있으니까
+        # related_name : user가 어떻게 우리를찾기를 원하는가. room_set대신에 rooms라고 치면 나온다
         on_delete=models.CASCADE,  # 여기서 on_delete은 만약 여기서 foreign키인 user가 삭제 되었다면 전체 룸을 삭제해야함
     )  # one to many를 쓰는 자는 Foreign key!!
     room_type = models.ForeignKey(
-        "RoomType", on_delete=models.SET_NULL, null=True
+        "RoomType", related_name="rooms", on_delete=models.SET_NULL, null=True
     )  # 하나의 방에선 하나혹은 둘의 룸타입만 존재하기때문에 one to many 라서 forekey.
     # 근데 룸이 여러개가 있고 룸타입이 여러개가 있다?이럴땐 manytomanyfield를 써야함.  여기서 on_delete이 models.Set_null인데 장고 도큐먼트를 보면 그건
     # 위에와 다르게 roomType이 삭제 되어도 괜찮음. 대신 models.Set_null을 쓸때 null=True도 함께 써준다
     # https://lee-seul.github.io/django/backend/2018/01/28/django-model-on-delete.html 참조
 
-    amenities = models.ManyToManyField("Amenity", blank=True)
-    facilities = models.ManyToManyField("Facility", blank=True)
-    house_rules = models.ManyToManyField("HouseRule", blank=True)
+    amenities = models.ManyToManyField("Amenity", related_name="rooms", blank=True)
+    facilities = models.ManyToManyField("Facility", related_name="rooms", blank=True)
+    house_rules = models.ManyToManyField("HouseRule", related_name="rooms", blank=True)
 
     # 장고와 파이썬은 클래스를 가지고 string으로 만든다. 장고에 있는 모든 클래스 들이 가지고있는 하나의 method가 바로 __str__임
     # 모든 파이썬은 __str__을 가지고 있음.
     def __str__(self):
         return self.name  # 이거를 해줌으로써 이 room에대한 제목을 내가 위에 적은 name 이름으로 바꿔줄 수 가 있음. 그래서
         # 나는 룸 리스트를 이름 순으로 볼 수가 있음. (self.name)
+
+    # 룸에대한 전체 평균 구하는 함수. 모든 유저의 리뷰 평균!
+    def total_rating(self):
+        all_reviews = self.reviews.all()
+        all_ratings = 0
+        for review in all_reviews:
+            all_ratings += review.rating_average()
+        if len(all_reviews) > 0:
+            return all_ratings / len(all_reviews)
+        else:
+            return 0

@@ -35,8 +35,9 @@ class User(AbstractUser):  # 상속 받음. base.py안에있는model으로부터
     )
 
     avatar = models.ImageField(
-        blank=True
+        upload_to="avatar", blank=True
     )  # null은 데이터베이스에 쓰이는 거고 blanks는 form에 적용된느거. 값이 없어도 된다는 뜻.
+    # uploads 폴더안의 어떤 폴더에다가 photo를 업로드 할것인지! upload라는 폴더안에 "avatar"라는 파일을 집어넣겠다. 그리고 거기안에 저장하겠다.
     gender = models.CharField(choices=GENDER_CHOICES, max_length=10, blank=True)
     bio = models.TextField(blank=True)
     birthdate = models.DateField(blank=True, null=True)

@@ -24,6 +24,8 @@ SECRET_KEY = "zuyesd=&=_&rkv!-*40ad^9$w+==a@00lz7l9bbts$lzb&(-6="
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+# 아마존에 업로드 할때 이것을 False로 바꿔준다. 평소에는 내 주소로 개발하는 동안엔 개발자 모드 True. 서버 모드에는 False
+
 
 ALLOWED_HOSTS = []
 
@@ -136,3 +138,12 @@ STATIC_URL = "/static/"
 
 AUTH_USER_MODEL = "users.User"
 # avartar, gender등을 만들어줬기때문에 나만의 유저를 썼지만, 장고에서 제공하는 유저를 써도 됨
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "uploads")
+
+# Django-media_root : 장고에게 우리가 업로드한 파일을 어디다 넣어주는지 해주는 장치
+# 맨 위에 가보면 BASE_DIR 라는게 있는데 이게 컴퓨터에 경로를 알려주는 것임. 저 형태에서 join(BASE_DIR, "uploads") 라 붙여주면
+# uploads라는 파일이 이 장고 프로젝트 파일안에 생성되게 됨.
+
+MEDIA_URL = "/media/"
+# uploads 폴더안의 파일들을 관리 해 줌. (유저가 갈 주소들을 address해줌.) 그 후에 config안에 urls들을 추가해줌

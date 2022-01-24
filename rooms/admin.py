@@ -1,7 +1,11 @@
 from encodings import search_function
 from itertools import product
+from operator import mod
 from pyexpat import model
 from django.contrib import admin
+from django.utils.html import mark_safe
+
+# 실제 사진을 클릭하지 않고 바로 보여주기 위해 html을 여기다 임의로 추가하는데 추가할때 적어줘야함
 from . import models
 
 
@@ -25,8 +29,20 @@ class ItemAdmin(
     pass
 
 
+class PhotoInline(admin.TabularInline):  # 룸 안 사진을 목록들을 넣는 방식
+
+    model = models.Photo
+
+
+# inline modelAdmin
+
+
 @admin.register(models.Room)
 class RoomAdmin(admin.ModelAdmin):
+
+    inlines = (
+        PhotoInline,
+    )  # 룸 안에 사진 목록들을 넣는 방식. 클래스 photo 에 FK가 room이 돼 있으므로 이렇게 만 설정
     # 필드 셋은 예쁘께 꾸며주기 위해~!
     fieldsets = (
         (
@@ -91,6 +107,8 @@ class RoomAdmin(admin.ModelAdmin):
     # city로 검색했는데도 불구하고 나오지 않으면 username으로 검색할수있게 하는데 그게 room에서는 foreign키고 그거는 host__username으로 됨
     # https://docs.djangoproject.com/en/4.0/ref/contrib/admin/#django.contrib.admin.ModelAdmin.search_fields
 
+    raw_id_fields = ("host",)  # 디테일에 host이름을 클릭하고 나면 번호로 지정되게 함. 그리고
+
     search_fields = ("^city", "^host__username")
 
     filter_horizontal = (
@@ -114,10 +132,18 @@ class RoomAdmin(admin.ModelAdmin):
 
 # admin에 있는 함수는 두가지를 가지는데 하나는 self는 RoomAdmin 클래스이고, obj는 현재 row이다.
 
+
 # photo는 다른 어드민에 있기 때문에 이렇게 따로 빼줌.
 @admin.register(models.Photo)
 class PhotoAdmin(admin.ModelAdmin):
 
     """photo admin definition"""
 
-    pass
+    list_display = ("__str__", "get_thumbnail")
+
+    def get_thumbnail(self, obj):
+        return mark_safe(f'<img width="50px" src="{obj.file.url}" />')
+
+    # 실제 사진을 클릭하지 않고 바로 보여주기 위해 사진 주사 + html을 여기다 임의로 추가하는데 추가할때 mark_safe를 앞에 적어줘야함
+
+    get_thumbnail.short_description = "Thumbnail"

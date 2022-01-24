@@ -62,7 +62,9 @@ class Photo(core_models.TimeStampedModel):
     """photo model definition"""
 
     caption = models.CharField(max_length=80)
-    file = models.ImageField()
+    file = models.ImageField(
+        upload_to="room_photos"
+    )  # uploads 폴더안의 어떤 폴더에다가 photo를 업로드 할것인지! upload라는 폴더안에 "room_photo"라는 파일을 집어넣겠다. 그리고 거기안에 저장하겠다.
     room = models.ForeignKey(
         "Room",
         related_name="photos",
@@ -111,6 +113,10 @@ class Room(core_models.TimeStampedModel):
     def __str__(self):
         return self.name  # 이거를 해줌으로써 이 room에대한 제목을 내가 위에 적은 name 이름으로 바꿔줄 수 가 있음. 그래서
         # 나는 룸 리스트를 이름 순으로 볼 수가 있음. (self.name)
+
+    def save(self, *args, **kwargs):  # 사용자가 어떤것을 저장할때 고정된 값으로 바꿀 수 있음
+        self.city = str.capitalize(self.city)  # 이 함수에서는 사용자가 city이름을 적을때 소문자를 대문자로 바꿔준다
+        super().save(*args, **kwargs)  # 이런 save를 하려면 엄마클래스와함께 적용해야하기때문에 super()을 적음
 
     # 룸에대한 전체 평균 구하는 함수. 모든 유저의 리뷰 평균!
     def total_rating(self):
